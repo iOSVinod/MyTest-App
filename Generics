@@ -1,0 +1,32 @@
+import UIKit
+
+// Generic sample function to call a get API
+func fetchData<T: Decodable>(urlString : String, completion : @escaping (T) -> () ) {
+    
+    guard let urlLocal = URL(string: urlString) else { return}
+    
+    URLSession.shared.dataTask(with: urlLocal) { (data, response, error) in
+        guard error == nil , let data = data else {
+            return
+        }
+        
+        do {
+            let object = try JSONDecoder().decode(T.self, from: data)
+            completion(object)
+        }
+        catch{}
+        }.resume()
+}
+
+struct FoodDetails : Decodable {
+    let name: String
+    let FoodId : Int64
+    let merchantName: String
+    let details : String
+}
+// call the above generic function
+fetchData(urlString: "YOUR_GET_TYPE_API_URL"){ (food: FoodDetails) in
+    
+    debugPrint(food.name)
+    
+}
