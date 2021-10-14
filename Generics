@@ -1,7 +1,9 @@
 import UIKit
 
+//*********************************************
 // Generic sample function to call a get API
-func fetchData<T: Decodable>(urlString : String, completion : @escaping (T) -> () ) {
+//*********************************************
+func fetchAPIData<T: Codable>( stringUrl: String, completion: @escaping (T) -> ()) {
     
     guard let urlLocal = URL(string: urlString) else { return}
     
@@ -11,22 +13,41 @@ func fetchData<T: Decodable>(urlString : String, completion : @escaping (T) -> (
         }
         
         do {
-            let object = try JSONDecoder().decode(T.self, from: data)
+            let object = try JSONDecoder().decode(AppResponseData<T>.self, from: data)
             completion(object)
         }
-        catch{}
+        catch{
+         debugPrint("JSON Serialization error")
+        }
         }.resume()
 }
 
-struct FoodDetails : Decodable {
-    let name: String
-    let FoodId : Int64
-    let merchantName: String
-    let details : String
+//*********************************************
+// Will be Called a web-api
+//*********************************************
+func callWebAPI() {
+     let strURL = <YOUR_API_URL>//"https://www.7timer.info/bin/astro.php?lon=75.8577&lat=22.7196&ac=0&unit=metric&output=json&tzshift=0"
+      self.fetchAPIData(stringUrl: strURL) { ( weatherInfo: [Weather]) in
+       debugPrint(weatherInfo.count)
+   }
 }
-// call the above generic function
-fetchData(urlString: "YOUR_GET_TYPE_API_URL"){ (food: FoodDetails) in
-    
-    debugPrint(food.name)
-    
+
+//****** Models ******************
+struct AppResponseData<T>: Codable where T: Codable {
+    let product: String
+    let dataseries: T
 }
+
+struct Weather: Codable {
+    let timePoint: Int?
+    enum CodingKeys: String, CodingKey {
+        case timePoint = "timePoint"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        timePoint = try values.decodeIfPresent(Int.self, forKey: .timePoint)
+    }
+}
+//*****************************
+
