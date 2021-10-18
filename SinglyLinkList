@@ -1,0 +1,32 @@
+
+class Node {
+    var value: Int
+    var node: Node?
+    
+    init(value : Int , node: Node?) {
+        self.value = value
+        self.node = node
+    }
+    
+ //reverse a signly link list
+ class func reverseLinkList( node: Node?) {
+    
+    var current = node
+    var next : Node?
+    var previous : Node?
+   
+    while current?.node != nil {
+        next = current?.node//node 2, node3
+        current?.node = previous//nil, node2
+        previous = current// node1, node2
+        current = next //node2,node3
+    }
+}
+}
+
+//initialisation
+let node3 = Node(value: 3, node: nil)
+let node2 = Node(value: 2, node: node3)
+let node1 = Node(value: 1, node: node2)
+
+Node.reverseLinkList(node: node1)
