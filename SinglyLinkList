@@ -1,5 +1,5 @@
 
-class Node {
+final class Node {
     var value: Int
     var node: Node?
     
