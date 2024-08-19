@@ -1,3 +1,9 @@
+ /*
+ --------------
+| value | node |
+ ---------------
+*/
+
 
 final class Node {
     var value: Int
